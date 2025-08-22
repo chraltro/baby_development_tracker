@@ -78,16 +78,16 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
         </div>
       </div>
 
-      {/* Combined Quick Buttons and Month Markers */}
-      <div className="mb-3">
+      {/* Quick Date Buttons (days ago) */}
+      <div className="mb-2">
+        <div className="text-xs text-aurora-text-secondary text-center mb-1">Quick dates:</div>
         <div className="flex flex-wrap gap-1 justify-center">
-          {/* Quick date buttons styled like month markers */}
           <button 
             onClick={() => jumpToQuickDate(0)}
             data-no-aurora
-            className={`px-2 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
               selectedDays === maxDays
-                ? 'bg-aurora-accent-green/20 text-aurora-accent-green border border-aurora-accent-green/30'
+                ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
             }`}
           >
@@ -96,39 +96,44 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
           <button 
             onClick={() => jumpToQuickDate(-1)}
             data-no-aurora
-            className={`px-2 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
               selectedDays === maxDays - 1
-                ? 'bg-aurora-accent-green/20 text-aurora-accent-green border border-aurora-accent-green/30'
+                ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
             }`}
           >
-            Yest
+            Yesterday
           </button>
           <button 
             onClick={() => jumpToQuickDate(-7)}
             data-no-aurora
-            className={`px-2 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
               Math.abs(selectedDays - (maxDays - 7)) < 3
-                ? 'bg-aurora-accent-green/20 text-aurora-accent-green border border-aurora-accent-green/30'
+                ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
             }`}
           >
-            1w
+            1 week ago
           </button>
           <button 
             onClick={() => jumpToQuickDate(-30)}
             data-no-aurora
-            className={`px-2 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
               Math.abs(selectedDays - (maxDays - 30)) < 7
-                ? 'bg-aurora-accent-green/20 text-aurora-accent-green border border-aurora-accent-green/30'
+                ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
             }`}
           >
-            1m
+            1 month ago
           </button>
-          
-          {/* Month markers */}
-          {monthMarkers.slice(0, 8).map(month => (
+        </div>
+      </div>
+
+      {/* Age Milestones */}
+      <div className="mb-3">
+        <div className="text-xs text-aurora-text-secondary text-center mb-1">Age milestones:</div>
+        <div className="flex flex-wrap gap-1 justify-center">
+          {monthMarkers.slice(0, 10).map(month => (
             <button
               key={month}
               onClick={() => jumpToMonth(month)}
