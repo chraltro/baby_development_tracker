@@ -64,28 +64,29 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
   };
 
   return (
-    <div className="bg-aurora-card/80 backdrop-blur-xl border border-aurora-border rounded-xl p-4">
+    <div className="bg-aurora-card/80 backdrop-blur-xl border border-aurora-border rounded-2xl p-6">
       {/* Selected Date Display */}
-      <div className="text-center mb-3">
-        <div className="text-lg font-bold text-aurora-text-primary">
+      <div className="text-center mb-6">
+        <div className="text-2xl font-bold text-aurora-text-primary mb-2">
           {getAgeText(selectedDays)}
         </div>
-        <div className="text-xs text-aurora-text-secondary">
+        <div className="text-sm text-aurora-text-secondary">
           {getSelectedDate(selectedDays).toLocaleDateString('en-US', { 
-            month: 'short', 
+            weekday: 'long',
+            month: 'long', 
             day: 'numeric' 
           })}
         </div>
       </div>
 
       {/* Quick Date Buttons (days ago) */}
-      <div className="mb-2">
-        <div className="text-xs text-aurora-text-secondary text-center mb-1">Quick dates:</div>
-        <div className="flex flex-wrap gap-1 justify-center">
+      <div className="mb-4">
+        <div className="text-sm text-aurora-text-secondary text-center mb-3 font-medium">Quick dates:</div>
+        <div className="flex flex-wrap gap-2 justify-center">
           <button 
             onClick={() => jumpToQuickDate(0)}
             data-no-aurora
-            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-4 py-2 text-sm rounded-xl transition-all touch-manipulation min-h-[40px] ${
               selectedDays === maxDays
                 ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
@@ -96,7 +97,7 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
           <button 
             onClick={() => jumpToQuickDate(-1)}
             data-no-aurora
-            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-4 py-2 text-sm rounded-xl transition-all touch-manipulation min-h-[40px] ${
               selectedDays === maxDays - 1
                 ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
@@ -107,7 +108,7 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
           <button 
             onClick={() => jumpToQuickDate(-7)}
             data-no-aurora
-            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-4 py-2 text-sm rounded-xl transition-all touch-manipulation min-h-[40px] ${
               Math.abs(selectedDays - (maxDays - 7)) < 3
                 ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
@@ -118,7 +119,7 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
           <button 
             onClick={() => jumpToQuickDate(-30)}
             data-no-aurora
-            className={`px-3 py-1 text-xs rounded-full transition-all touch-manipulation ${
+            className={`px-4 py-2 text-sm rounded-xl transition-all touch-manipulation min-h-[40px] ${
               Math.abs(selectedDays - (maxDays - 30)) < 7
                 ? 'bg-aurora-accent-purple/20 text-aurora-accent-purple border border-aurora-accent-purple/30'
                 : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
@@ -130,15 +131,15 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
       </div>
 
       {/* Age Milestones */}
-      <div className="mb-3">
-        <div className="text-xs text-aurora-text-secondary text-center mb-1">Age milestones:</div>
-        <div className="flex flex-wrap gap-1 justify-center">
+      <div className="mb-6">
+        <div className="text-sm text-aurora-text-secondary text-center mb-3 font-medium">Age milestones:</div>
+        <div className="flex flex-wrap gap-2 justify-center">
           {monthMarkers.slice(0, 10).map(month => (
             <button
               key={month}
               onClick={() => jumpToMonth(month)}
               data-no-aurora
-              className={`px-2 py-1 text-xs rounded-full transition-all touch-manipulation ${
+              className={`px-3 py-2 text-sm rounded-lg transition-all touch-manipulation min-h-[36px] ${
                 Math.abs(selectedDays - (month * 30.44)) < 15
                   ? 'bg-aurora-accent-green/20 text-aurora-accent-green border border-aurora-accent-green/30'
                   : 'bg-aurora-border/20 text-aurora-text-secondary hover:bg-aurora-border/40'
@@ -151,36 +152,29 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
       </div>
 
       {/* Date Slider */}
-      <div className="mb-3">
+      <div className="mb-6">
         <input
           type="range"
           min="0"
           max={maxDays}
           value={selectedDays}
           onChange={handleSliderChange}
-          className="w-full h-2 bg-aurora-border/30 rounded-lg appearance-none cursor-pointer slider touch-manipulation"
+          className="w-full h-3 bg-aurora-border/30 rounded-lg appearance-none cursor-pointer slider touch-manipulation"
         />
-        <div className="flex justify-between text-xs text-aurora-text-secondary mt-1">
+        <div className="flex justify-between text-sm text-aurora-text-secondary mt-3">
           <span>Birth</span>
           <span>Today</span>
         </div>
       </div>
 
       {/* Action Buttons */}
-      <div className="flex justify-end gap-2">
-        <button
-          onClick={onClose}
-          data-no-aurora
-          className="px-4 py-2 text-sm text-aurora-text-secondary hover:text-aurora-text-primary transition-colors touch-manipulation"
-        >
-          Cancel
-        </button>
+      <div className="flex justify-center">
         <button
           onClick={handleDateConfirm}
           data-no-aurora
-          className="px-4 py-2 text-sm bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green rounded-lg transition-colors touch-manipulation"
+          className="px-8 py-3 text-base bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green rounded-xl transition-colors touch-manipulation min-h-[48px] font-semibold shadow-aurora-glow-green"
         >
-          Confirm
+          Confirm Date
         </button>
       </div>
       

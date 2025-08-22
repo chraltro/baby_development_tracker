@@ -61,40 +61,40 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 flex flex-col px-4 py-4 overflow-y-auto">
+      <div className="flex-1 flex flex-col px-6 py-6 overflow-y-auto">
         {/* Top Action Bar with Not Yet button */}
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-aurora-text-primary">
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold text-aurora-text-primary">
             When did this happen?
-          </h3>
+          </h2>
           <button
             onClick={handleNoClick}
-            className="px-4 py-2 text-sm text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-lg transition-colors touch-manipulation"
+            className="px-5 py-3 text-base text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-xl transition-colors touch-manipulation min-h-[44px]"
           >
             {isAchieved ? 'Remove' : 'Not Yet'}
           </button>
         </div>
         
         {/* Question */}
-        <div className="text-center mb-4">
-          <p className="text-base text-aurora-text-primary mb-2 leading-tight">
+        <div className="text-center mb-8">
+          <p className="text-lg text-aurora-text-primary mb-4 leading-relaxed px-2">
             {milestone.question}
           </p>
           
-          <div className="flex justify-center mb-4">
+          <div className="flex justify-center">
             <Tooltip text={`Typically emerges around:\n**${milestone.typicalAge} month${milestone.typicalAge !== 1 ? 's' : ''}**`}>
               <div className="inline-flex items-center text-aurora-text-secondary hover:text-aurora-text-primary transition-colors cursor-help">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-xs">Typical: {milestone.typicalAge}m</span>
+                <span className="text-sm">Typically appears at {milestone.typicalAge} months</span>
               </div>
             </Tooltip>
           </div>
         </div>
 
         {/* Date slider */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col justify-center">
           <CompactDateSlider
             dob={dob}
             onDateSelect={handleDateSelect}
