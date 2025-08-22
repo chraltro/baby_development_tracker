@@ -22,7 +22,7 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
   dob,
   chronologicalAge
 }) => {
-  const [showDateSlider, setShowDateSlider] = useState(false);
+  const [showDateSlider, setShowDateSlider] = useState(true); // Start with date selection immediately
   const isAchieved = achievements[milestone.id];
   
   const nextMilestone = useMemo(() => {
@@ -33,9 +33,6 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
     return null;
   }, [milestone.id]);
 
-  const handleYesClick = () => {
-    setShowDateSlider(true);
-  };
 
   const handleNoClick = () => {
     if (isAchieved) {
@@ -51,7 +48,6 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
 
   const handleDateSelect = (selectedDate: string) => {
     onAchievementChange(milestone.id, { date: selectedDate });
-    setShowDateSlider(false);
     
     if (nextMilestone) {
       // Stay in fullscreen mode and show next milestone
@@ -67,22 +63,23 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
     <div className="h-full flex flex-col">
       <div className="flex-1 flex flex-col px-4 py-4 overflow-y-auto">
         {/* Top Action Bar with Not Yet button */}
-        {!showDateSlider && (
-          <div className="flex justify-end mb-4">
-            <button
-              onClick={handleNoClick}
-              className="px-4 py-2 text-sm text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-lg transition-colors touch-manipulation"
-            >
-              {isAchieved ? 'Remove' : 'Not Yet'}
-            </button>
-          </div>
-        )}
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-bold text-aurora-text-primary">
+            When did this happen?
+          </h3>
+          <button
+            onClick={handleNoClick}
+            className="px-4 py-2 text-sm text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-lg transition-colors touch-manipulation"
+          >
+            {isAchieved ? 'Remove' : 'Not Yet'}
+          </button>
+        </div>
         
         {/* Question */}
         <div className="text-center mb-4">
-          <h3 className="text-xl font-bold text-aurora-text-primary mb-2 leading-tight">
+          <p className="text-base text-aurora-text-primary mb-2 leading-tight">
             {milestone.question}
-          </h3>
+          </p>
           
           <div className="flex justify-center mb-4">
             <Tooltip text={`Typically emerges around:\n**${milestone.typicalAge} month${milestone.typicalAge !== 1 ? 's' : ''}**`}>
@@ -96,24 +93,13 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
           </div>
         </div>
 
-        {/* Date slider or Yes button */}
+        {/* Date slider */}
         <div className="flex-1">
-          {showDateSlider ? (
-            <CompactDateSlider
-              dob={dob}
-              onDateSelect={handleDateSelect}
-              onClose={() => setShowDateSlider(false)}
-            />
-          ) : (
-            <div className="flex flex-col h-full justify-center">
-              <button
-                onClick={handleYesClick}
-                className="w-full py-6 bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green font-bold text-xl rounded-2xl transition-colors touch-manipulation shadow-aurora-glow-green"
-              >
-                {isAchieved ? `Update (${new Date(isAchieved.date).toLocaleDateString()})` : 'Yes! 🎉'}
-              </button>
-            </div>
-          )}
+          <CompactDateSlider
+            dob={dob}
+            onDateSelect={handleDateSelect}
+            onClose={handleNoClick}
+          />
         </div>
       </div>
 
