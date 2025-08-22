@@ -98,20 +98,12 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
         {/* Date slider or buttons */}
         <div className="space-y-6">
           {showDateSlider ? (
-            <div className="bg-aurora-card/70 backdrop-blur-lg border border-aurora-border p-6 rounded-2xl shadow-aurora-glow-blue">
-              <DateSlider
-                dob={dob}
-                onDateSelect={handleDateSelect}
-                selectedDate={isAchieved?.date}
-                className="mb-4"
-              />
-              <button
-                onClick={() => setShowDateSlider(false)}
-                className="w-full py-3 text-center text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-xl transition-colors touch-manipulation"
-              >
-                Cancel
-              </button>
-            </div>
+            <DateSlider
+              dob={dob}
+              onDateSelect={handleDateSelect}
+              onClose={() => setShowDateSlider(false)}
+              isExpanded={true}
+            />
           ) : (
             <div className="space-y-4">
               <button
