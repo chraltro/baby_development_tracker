@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Baby Development Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script async src="https://ga.jspm.io/npm:es-module-shims@1.10.0/dist/es-module-shims.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+            colors: {
+              // Modern Aurora Theme - Green & Purple
+              'aurora-bg': '#0a0d1a',
+              'aurora-card': '#1a1d2e',
+              'aurora-border': '#2d3748',
+              'aurora-text-primary': '#f7fafc',
+              'aurora-text-secondary': '#a0aec0',
+              'aurora-accent-purple': '#8b5cf6',
+              'aurora-accent-green': '#10b981',
+              'aurora-accent-emerald': '#059669',
+              'aurora-accent-violet': '#7c3aed',
+              'aurora-accent-lime': '#65a30d',
+              'aurora-hover-purple': '#9333ea',
+              'aurora-hover-green': '#047857',
+            },
+            backgroundImage: {
+              'aurora-gradient': 'linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 50%, rgba(124, 58, 237, 0.1) 100%)',
+              'aurora-waves': 'radial-gradient(ellipse 120% 80% at 50% -10%, rgba(139, 92, 246, 0.15), transparent 50%), radial-gradient(ellipse 100% 60% at 80% 110%, rgba(16, 185, 129, 0.12), transparent 50%)',
+              'button-gradient': 'linear-gradient(135deg, #8b5cf6, #10b981)',
+              'button-gradient-hover': 'linear-gradient(135deg, #9333ea, #059669)',
+              'card-gradient': 'linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(16, 185, 129, 0.05))',
+              'progress-gradient': 'linear-gradient(90deg, #8b5cf6, #10b981)',
+              'glow-gradient': 'linear-gradient(135deg, rgba(139, 92, 246, 0.6), rgba(16, 185, 129, 0.6))',
+            },
+            boxShadow: {
+              'aurora-glow': '0 8px 32px rgba(139, 92, 246, 0.2), 0 4px 16px rgba(16, 185, 129, 0.15)',
+              'aurora-glow-purple': '0 8px 32px rgba(139, 92, 246, 0.4)',
+              'aurora-glow-green': '0 8px 32px rgba(16, 185, 129, 0.4)',
+              'aurora-card': '0 4px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(139, 92, 246, 0.1)',
+              'aurora-button': '0 4px 16px rgba(139, 92, 246, 0.3), 0 2px 8px rgba(16, 185, 129, 0.2)',
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.6s ease-out',
+              'aurora-float': 'auroraFloat 6s ease-in-out infinite',
+              'aurora-pulse': 'auroraPulse 4s ease-in-out infinite',
+              'shimmer': 'shimmer 2s linear infinite',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: 0, transform: 'translateY(20px)' },
+                '100%': { opacity: 1, transform: 'translateY(0)' },
+              },
+              auroraFloat: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              auroraPulse: {
+                '0%, 100%': { opacity: 0.8 },
+                '50%': { opacity: 1 },
+              },
+              shimmer: {
+                '0%': { backgroundPosition: '-200% 0' },
+                '100%': { backgroundPosition: '200% 0' },
+              }
+            }
+          },
+        },
+      }
+    </script>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
+    "react/": "https://esm.sh/react@^19.1.1/",
+    "react": "https://esm.sh/react@^19.1.1"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-aurora-bg text-aurora-text-primary overflow-x-hidden">
+    <!-- Aurora Background Effects -->
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-aurora-gradient"></div>
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-aurora-waves animate-aurora-pulse"></div>
+    
+    <!-- Floating Aurora Particles -->
+    <div class="fixed top-10 left-10 w-32 h-32 rounded-full bg-aurora-accent-purple opacity-20 blur-xl animate-aurora-float -z-10"></div>
+    <div class="fixed top-1/3 right-20 w-24 h-24 rounded-full bg-aurora-accent-green opacity-25 blur-xl animate-aurora-float -z-10" style="animation-delay: -2s;"></div>
+    <div class="fixed bottom-20 left-1/4 w-40 h-40 rounded-full bg-aurora-accent-violet opacity-15 blur-xl animate-aurora-float -z-10" style="animation-delay: -4s;"></div>
+    <div class="fixed top-2/3 right-1/3 w-28 h-28 rounded-full bg-aurora-accent-emerald opacity-20 blur-xl animate-aurora-float -z-10" style="animation-delay: -1s;"></div>
+    
+    <div id="root"></div>
+    
+    <!-- Aurora Interactive Effects Script -->
+    <script>
+      // Mouse tracking for interactive hover effects
+      document.addEventListener('mousemove', (e) => {
+        document.documentElement.style.setProperty('--mouse-x', (e.clientX / window.innerWidth * 100) + '%');
+        document.documentElement.style.setProperty('--mouse-y', (e.clientY / window.innerHeight * 100) + '%');
+      });
+      
+      // Dynamic aurora particles
+      function createAuroraParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'aurora-particle';
+        
+        const colors = ['#8b5cf6', '#10b981', '#7c3aed', '#059669'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 60 + 20;
+        
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = Math.random() * window.innerWidth + 'px';
+        particle.style.top = Math.random() * window.innerHeight + 'px';
+        particle.style.background = color;
+        particle.style.animationDuration = (Math.random() * 8 + 6) + 's';
+        particle.style.animationDelay = Math.random() * 5 + 's';
+        
+        document.body.appendChild(particle);
+        
+        // Remove particle after animation completes
+        setTimeout(() => {
+          if (particle.parentNode) {
+            particle.parentNode.removeChild(particle);
+          }
+        }, 14000);
+      }
+      
+      // Create initial particles
+      for (let i = 0; i < 6; i++) {
+        setTimeout(() => createAuroraParticle(), i * 2000);
+      }
+      
+      // Continue creating particles periodically
+      setInterval(createAuroraParticle, 8000);
+      
+      // Aurora button enhancement
+      function enhanceButtons() {
+        const buttons = document.querySelectorAll('button:not([data-no-aurora]), .aurora-button');
+        buttons.forEach(button => {
+          if (!button.classList.contains('aurora-enhanced')) {
+            button.classList.add('aurora-button', 'aurora-enhanced');
+            
+            button.addEventListener('click', (e) => {
+              // Create ripple effect
+              const ripple = document.createElement('span');
+              const rect = button.getBoundingClientRect();
+              const size = Math.max(rect.width, rect.height);
+              const x = e.clientX - rect.left - size / 2;
+              const y = e.clientY - rect.top - size / 2;
+              
+              ripple.style.cssText = `
+                position: absolute;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                background: radial-gradient(circle, rgba(255,255,255,0.5), transparent);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s ease-out;
+                pointer-events: none;
+              `;
+              
+              button.style.position = 'relative';
+              button.style.overflow = 'hidden';
+              button.appendChild(ripple);
+              
+              setTimeout(() => {
+                if (ripple.parentNode) {
+                  ripple.parentNode.removeChild(ripple);
+                }
+              }, 600);
+            });
+          }
+        });
+      }
+      
+      // Add ripple animation keyframes
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes ripple {
+          from {
+            transform: scale(0);
+            opacity: 1;
+          }
+          to {
+            transform: scale(2);
+            opacity: 0;
+          }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // Enhance buttons when DOM is ready
+      document.addEventListener('DOMContentLoaded', enhanceButtons);
+      
+      // Re-enhance buttons periodically (for dynamically added content)
+      setInterval(enhanceButtons, 2000);
+    </script>
+    
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

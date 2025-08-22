@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run dev:*)",
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(python:*)",
+      "Bash(npx serve:*)",
+      "Bash(npx:*)",
+      "Bash(npm cache clean:*)",
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
