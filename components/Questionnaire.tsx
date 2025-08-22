@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { milestones } from '../constants/milestones';
-import { Domain, Achievements, AchievementData } from '../types';
+import { milestones, MILESTONES } from '../constants/milestones';
+import { Domain, Achievements, AchievementData, Milestone } from '../types';
 import Tooltip from './Tooltip';
 import DomainIcon from './DomainIcon';
 import DateSlider from './DateSlider';
+import FullscreenModal from './FullscreenModal';
+import FullscreenQuestionnaire from './FullscreenQuestionnaire';
 
 interface QuestionnaireProps {
   chronologicalAge: number;
@@ -21,6 +23,30 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ chronologicalAge, achieve
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [milestoneForPhoto, setMilestoneForPhoto] = useState<string | null>(null);
   const [showDateSlider, setShowDateSlider] = useState<string | null>(null);
+  const [fullscreenMilestone, setFullscreenMilestone] = useState<Milestone | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    // Listen for milestone navigation events
+    const handleShowMilestone = (event: any) => {
+      setFullscreenMilestone(event.detail.milestone);
+    };
+    
+    window.addEventListener('show-milestone', handleShowMilestone);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener('show-milestone', handleShowMilestone);
+    };
+  }, []);
 
   const relevantMilestones = milestones.filter(m => {
     if (m.domain !== activeDomain) return false;
@@ -41,7 +67,14 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ chronologicalAge, achieve
   
 
   const handleLogButtonClick = (milestoneId: string) => {
-    setShowDateSlider(currentId => currentId === milestoneId ? null : milestoneId);
+    if (isMobile) {
+      const milestone = relevantMilestones.find(m => m.id === milestoneId);
+      if (milestone) {
+        setFullscreenMilestone(milestone);
+      }
+    } else {
+      setShowDateSlider(currentId => currentId === milestoneId ? null : milestoneId);
+    }
   };
 
   const handleDateSelected = (milestoneId: string, dateString: string) => {
@@ -69,7 +102,8 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ chronologicalAge, achieve
 
 
   return (
-    <div className="bg-aurora-card/70 backdrop-blur-lg border border-aurora-border p-4 sm:p-6 rounded-2xl shadow-aurora-glow-blue">
+    <>
+      <div className="bg-aurora-card/70 backdrop-blur-lg border border-aurora-border p-4 sm:p-6 rounded-2xl shadow-aurora-glow-blue">
       <input
         type="file"
         ref={fileInputRef}
@@ -164,24 +198,45 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ chronologicalAge, achieve
                                     onClick={() => handleLogButtonClick(milestone.id)} 
                                     className="px-6 py-3 sm:px-4 sm:py-2 text-base sm:text-sm font-semibold rounded-full bg-aurora-border text-aurora-text-primary hover:bg-aurora-border/70 active:bg-aurora-border/60 transform hover:scale-105 active:scale-95 transition-all touch-manipulation min-h-[44px] sm:min-h-0"
                                 >
-                                    Log Achievement
+                                    {isMobile ? 'Open' : 'Log Achievement'}
                                 </button>
                             </div>
                         )}
                         
-                        {/* Inline Date Slider */}
-                        <DateSlider
-                          dob={dob}
-                          isExpanded={showDateSlider === milestone.id}
-                          onDateSelect={(dateString) => handleDateSelected(milestone.id, dateString)}
-                          onClose={() => setShowDateSlider(null)}
-                        />
+                        {/* Inline Date Slider - hidden on mobile */}
+                        {!isMobile && (
+                          <DateSlider
+                            dob={dob}
+                            isExpanded={showDateSlider === milestone.id}
+                            onDateSelect={(dateString) => handleDateSelected(milestone.id, dateString)}
+                            onClose={() => setShowDateSlider(null)}
+                          />
+                        )}
                     </div>
                 );
             })}
         </div>
       </div>
-    </div>
+      </div>
+      
+      {/* Fullscreen Modal for Mobile */}
+      <FullscreenModal
+        isOpen={!!fullscreenMilestone}
+        onClose={() => setFullscreenMilestone(null)}
+        title={fullscreenMilestone?.domain || ''}
+      >
+        {fullscreenMilestone && (
+          <FullscreenQuestionnaire
+            milestone={fullscreenMilestone}
+            achievements={achievements}
+            onAchievementChange={onAchievementChange}
+            onClose={() => setFullscreenMilestone(null)}
+            dob={dob}
+            chronologicalAge={chronologicalAge}
+          />
+        )}
+      </FullscreenModal>
+    </>
   );
 };
 
