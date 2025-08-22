@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Milestone, Achievements, AchievementData, Domain } from '../types';
 import { MILESTONES } from '../constants/milestones';
 import DomainIcon from './DomainIcon';
-import DateSlider from './DateSlider';
+import CompactDateSlider from './CompactDateSlider';
 import Tooltip from './Tooltip';
 
 interface FullscreenQuestionnaireProps {
@@ -65,57 +65,45 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 flex flex-col justify-center px-6 pb-8">
-        {/* Domain indicator */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center gap-3 bg-aurora-card/70 backdrop-blur-lg border border-aurora-border px-6 py-3 rounded-2xl shadow-aurora-glow-blue">
-            <DomainIcon domain={milestone.domain} size="lg" />
-            <span className="text-lg font-semibold text-aurora-text-primary">{milestone.domain}</span>
-            {isRedFlag && (
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            )}
-          </div>
-        </div>
-
+      <div className="flex-1 flex flex-col px-4 py-4 overflow-y-auto">
         {/* Question */}
-        <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-aurora-text-primary mb-4 leading-relaxed">
+        <div className="text-center mb-4">
+          <h3 className="text-xl font-bold text-aurora-text-primary mb-2 leading-tight">
             {milestone.question}
           </h3>
           
-          <div className="flex justify-center">
+          <div className="flex justify-center mb-4">
             <Tooltip text={`Typically emerges around:\n**${milestone.typicalAge} month${milestone.typicalAge !== 1 ? 's' : ''}**`}>
               <div className="inline-flex items-center text-aurora-text-secondary hover:text-aurora-text-primary transition-colors cursor-help">
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span className="text-sm">Typical age info</span>
+                <span className="text-xs">Typical: {milestone.typicalAge}m</span>
               </div>
             </Tooltip>
           </div>
         </div>
 
         {/* Date slider or buttons */}
-        <div className="space-y-6">
+        <div className="flex-1">
           {showDateSlider ? (
-            <DateSlider
+            <CompactDateSlider
               dob={dob}
               onDateSelect={handleDateSelect}
               onClose={() => setShowDateSlider(false)}
-              isExpanded={true}
             />
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 flex flex-col h-full justify-center">
               <button
                 onClick={handleYesClick}
-                className="w-full py-6 bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green font-bold text-xl rounded-2xl transition-colors touch-manipulation shadow-aurora-glow-green"
+                className="w-full py-4 bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green font-bold text-lg rounded-xl transition-colors touch-manipulation shadow-aurora-glow-green"
               >
                 {isAchieved ? `Update (${new Date(isAchieved.date).toLocaleDateString()})` : 'Yes! 🎉'}
               </button>
               
               <button
                 onClick={handleNoClick}
-                className="w-full py-6 bg-aurora-border/20 hover:bg-aurora-border/30 text-aurora-text-secondary font-bold text-xl rounded-2xl transition-colors touch-manipulation"
+                className="w-full py-4 bg-aurora-border/20 hover:bg-aurora-border/30 text-aurora-text-secondary font-bold text-lg rounded-xl transition-colors touch-manipulation"
               >
                 {isAchieved ? 'Remove Achievement' : 'Not Yet'}
               </button>
