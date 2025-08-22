@@ -111,21 +111,46 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ chronologicalAge, achieve
         className="hidden"
         accept="image/*"
       />
-      <div className="mb-4">
-        <div className="flex flex-wrap border-b border-aurora-border overflow-x-auto scrollbar-hide -mx-2 px-2 sm:mx-0 sm:px-0">
+      <div className="mb-6">
+        {/* Mobile: Vertical stack of category buttons */}
+        <div className="md:hidden space-y-2">
           {domains.map(domain => (
             <button
               key={domain}
               onClick={() => setActiveDomain(domain)}
               data-no-aurora
-              className={`relative flex items-center justify-center py-4 px-4 sm:py-3 sm:px-3 -mb-px font-semibold text-sm sm:text-sm whitespace-nowrap focus:outline-none transition-all duration-300 touch-manipulation min-h-[48px] sm:min-h-0 ${
+              className={`w-full flex items-center py-4 px-6 font-semibold text-base rounded-xl transition-all duration-300 touch-manipulation ${
+                activeDomain === domain
+                  ? 'bg-aurora-accent-green/20 text-aurora-accent-green border-2 border-aurora-accent-green/30 shadow-aurora-glow-green'
+                  : 'bg-aurora-card/50 text-aurora-text-secondary hover:text-aurora-text-primary active:text-aurora-text-primary border-2 border-aurora-border hover:border-aurora-border/70'
+              }`}
+            >
+              <DomainIcon domain={domain} size="lg" />
+              <span className="ml-3 text-base font-semibold">{domain.replace('_', ' ')}</span>
+              {activeDomain === domain && (
+                <svg className="ml-auto w-6 h-6 text-aurora-accent-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </button>
+          ))}
+        </div>
+        
+        {/* Desktop: Horizontal tabs */}
+        <div className="hidden md:flex flex-wrap border-b border-aurora-border overflow-x-auto scrollbar-hide">
+          {domains.map(domain => (
+            <button
+              key={domain}
+              onClick={() => setActiveDomain(domain)}
+              data-no-aurora
+              className={`relative flex items-center justify-center py-3 px-3 -mb-px font-semibold text-sm whitespace-nowrap focus:outline-none transition-all duration-300 touch-manipulation ${
                 activeDomain === domain
                   ? 'text-aurora-text-primary'
                   : 'text-aurora-text-secondary hover:text-aurora-text-primary active:text-aurora-text-primary'
               }`}
             >
               <DomainIcon domain={domain} />
-              <span className="ml-2 text-xs sm:text-sm">{domain.replace('_', ' ')}</span>
+              <span className="ml-2 text-sm">{domain.replace('_', ' ')}</span>
               {activeDomain === domain && (
                 <div className="absolute bottom-0 left-0 w-full h-0.5 bg-aurora-text-primary"></div>
               )}
