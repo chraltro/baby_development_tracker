@@ -14,3 +14,6 @@ export const milestones: Milestone[] = [
     ...socialEmotionalMilestones,
     ...adaptiveMilestones,
 ];
+
+// Export as MILESTONES for consistency
+export const MILESTONES = milestones;
