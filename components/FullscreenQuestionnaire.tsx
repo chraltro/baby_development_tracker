@@ -66,6 +66,18 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 flex flex-col px-4 py-4 overflow-y-auto">
+        {/* Top Action Bar with Not Yet button */}
+        {!showDateSlider && (
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={handleNoClick}
+              className="px-4 py-2 text-sm text-aurora-text-secondary hover:text-aurora-text-primary border border-aurora-border hover:border-aurora-border/70 rounded-lg transition-colors touch-manipulation"
+            >
+              {isAchieved ? 'Remove' : 'Not Yet'}
+            </button>
+          </div>
+        )}
+        
         {/* Question */}
         <div className="text-center mb-4">
           <h3 className="text-xl font-bold text-aurora-text-primary mb-2 leading-tight">
@@ -84,7 +96,7 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
           </div>
         </div>
 
-        {/* Date slider or buttons */}
+        {/* Date slider or Yes button */}
         <div className="flex-1">
           {showDateSlider ? (
             <CompactDateSlider
@@ -93,19 +105,12 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
               onClose={() => setShowDateSlider(false)}
             />
           ) : (
-            <div className="space-y-3 flex flex-col h-full justify-center">
+            <div className="flex flex-col h-full justify-center">
               <button
                 onClick={handleYesClick}
-                className="w-full py-4 bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green font-bold text-lg rounded-xl transition-colors touch-manipulation shadow-aurora-glow-green"
+                className="w-full py-6 bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green font-bold text-xl rounded-2xl transition-colors touch-manipulation shadow-aurora-glow-green"
               >
                 {isAchieved ? `Update (${new Date(isAchieved.date).toLocaleDateString()})` : 'Yes! 🎉'}
-              </button>
-              
-              <button
-                onClick={handleNoClick}
-                className="w-full py-4 bg-aurora-border/20 hover:bg-aurora-border/30 text-aurora-text-secondary font-bold text-lg rounded-xl transition-colors touch-manipulation"
-              >
-                {isAchieved ? 'Remove Achievement' : 'Not Yet'}
               </button>
             </div>
           )}
