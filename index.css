@@ -10,6 +10,30 @@ body {
   background: #0a0d1a;
   position: relative;
   min-height: 100vh;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Better touch handling */
+button, .touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+/* Mobile tap states */
+@media (hover: none) and (pointer: coarse) {
+  button:active,
+  .touch-manipulation:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
+  
+  button:not(:disabled):active {
+    opacity: 0.8;
+  }
 }
 
 /* Aurora particle effects */
@@ -175,6 +199,88 @@ body {
     padding: 10px 20px;
     border-radius: 8px;
   }
+  
+  /* Better mobile spacing and sizing */
+  body {
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+  }
+  
+  input, button, select, textarea {
+    font-size: 16px; /* Prevent iOS zoom on input focus */
+  }
+  
+  /* Touch-friendly minimum sizes */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve scrolling on mobile */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Safe area adjustments for notched devices */
+@supports (padding: max(0px)) {
+  .container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+  
+  .sticky.top-0 {
+    top: max(0px, env(safe-area-inset-top));
+  }
+}
+
+/* Improve touch feedback */
+.touch-feedback {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.1s ease;
+}
+
+.touch-feedback::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s, opacity 0.3s;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.touch-feedback:active::after {
+  width: 200%;
+  height: 200%;
+  opacity: 1;
+}
+
+/* Enhanced touch states for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .touch-feedback:active {
+    transform: scale(0.96);
+  }
+  
+  /* Button press animations */
+  button:active,
+  .button:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  
+  /* Improved tap highlighting */
+  button,
+  [role="button"],
+  .touch-manipulation {
+    -webkit-tap-highlight-color: rgba(139, 92, 246, 0.2);
+    tap-highlight-color: rgba(139, 92, 246, 0.2);
+  }
 }
 
 /* Loading spinner */
@@ -228,6 +334,7 @@ body {
   animation: slideInFromTop 0.5s ease-out;
 }
 
+/* Animation keyframes */
 @keyframes slideInFromTop {
   from {
     transform: translateY(-100%);
@@ -237,4 +344,105 @@ body {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInFromBottom {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Animation utility classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in-bottom {
+  animation: slideInFromBottom 0.3s ease-out;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out;
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Loading states */
+.loading-shimmer {
+  background: linear-gradient(90deg, 
+    rgba(139, 92, 246, 0.1) 0%, 
+    rgba(139, 92, 246, 0.2) 50%, 
+    rgba(139, 92, 246, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+.loading-skeleton {
+  background: linear-gradient(90deg, 
+    rgba(139, 92, 246, 0.1) 0%, 
+    rgba(139, 92, 246, 0.2) 50%, 
+    rgba(139, 92, 246, 0.1) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+/* Button loading state */
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-left: -10px;
+  margin-top: -10px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }

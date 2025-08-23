@@ -1,11 +1,14 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { BabyProfile, Achievements, AchievementData } from './types';
+import { BabyProfile, Achievements, AchievementData, Domain } from './types';
 import { useMilestoneTracker } from './hooks/useMilestoneTracker';
 import Questionnaire from './components/Questionnaire';
 import Timeline from './components/Timeline';
 import FullscreenModal from './components/FullscreenModal';
 import FullscreenProfile from './components/FullscreenProfile';
 import FullscreenTimeline from './components/FullscreenTimeline';
+import WelcomeScreen from './components/WelcomeScreen';
+import ProgressOverview from './components/ProgressOverview';
+import MilestoneSuggestions from './components/MilestoneSuggestions';
 
 const getDetailedAge = (dob: string) => {
   if (!dob) return null;
@@ -46,9 +49,17 @@ const App: React.FC = () => {
     return !parsedProfile.name || !parsedProfile.dob;
   });
   
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState<boolean>(() => {
+    const savedProfile = localStorage.getItem('babyProfile');
+    const hasCompletedOnboarding = localStorage.getItem('completedOnboarding') === 'true';
+    const parsedProfile = savedProfile ? JSON.parse(savedProfile) : { name: '', dob: '' };
+    return (!parsedProfile.name || !parsedProfile.dob) && !hasCompletedOnboarding;
+  });
+  
   const [showFullscreenProfile, setShowFullscreenProfile] = useState(false);
   const [showFullscreenTimeline, setShowFullscreenTimeline] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeDomain, setActiveDomain] = useState<Domain | null>(null);
   
   // Detect mobile screen size
   useEffect(() => {
@@ -104,6 +115,8 @@ const App: React.FC = () => {
     if (profile.name && profile.dob) {
       setIsEditingProfile(false);
       setShowFullscreenProfile(false);
+      setShowWelcomeScreen(false);
+      localStorage.setItem('completedOnboarding', 'true');
     }
   };
   
@@ -142,7 +155,23 @@ const App: React.FC = () => {
         return newAchievements;
     });
   }, []);
+
+  const handleDomainChange = useCallback((domain: Domain) => {
+    setActiveDomain(domain);
+  }, []);
   
+  // Show welcome screen for first-time users
+  if (showWelcomeScreen) {
+    return (
+      <WelcomeScreen
+        profile={profile}
+        onProfileChange={handleProfileChange}
+        onSave={handleProfileSave}
+        isMobile={isMobile}
+      />
+    );
+  }
+
   return (
     <>
       <div className="min-h-screen text-aurora-text-primary font-sans">
@@ -155,7 +184,7 @@ const App: React.FC = () => {
         </div>
       </header>
       
-      <main className="container mx-auto p-4 sm:p-6">
+      <main className="container mx-auto p-4 sm:p-6 lg:p-8 max-w-7xl">
         {isEditingProfile && !isMobile ? (
           <div className="bg-aurora-card/70 backdrop-blur-lg border border-aurora-border p-6 sm:p-5 rounded-2xl shadow-aurora-glow-blue mb-8">
             <div className="flex items-center mb-4">
@@ -223,20 +252,58 @@ const App: React.FC = () => {
         ) : null}
 
         {profile.dob && (!isEditingProfile || !isMobile) ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div className="lg:col-span-1">
-              <h2 className="text-3xl font-bold mb-4 text-aurora-text-primary">Log Milestones</h2>
-              <Questionnaire 
-                chronologicalAge={chronologicalAge}
+          <div className="space-y-6">
+            {/* Progress Overview and Suggestions - Hidden on mobile, shown on tablet+ */}
+            <div className="hidden md:block lg:hidden space-y-6">
+              <ProgressOverview 
                 achievements={achievements}
-                onAchievementChange={handleAchievementChange}
-                onPhotoChange={handlePhotoChange}
-                dob={profile.dob}
+                chronologicalAge={chronologicalAge}
+                onDomainClick={handleDomainChange}
               />
+              {timelineData.length === 0 && (
+                <MilestoneSuggestions 
+                  chronologicalAge={chronologicalAge}
+                  achievements={achievements}
+                  onSuggestionClick={handleDomainChange}
+                />
+              )}
             </div>
-            <div className="lg:col-span-1">
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Progress Overview - Desktop */}
+              <div className="hidden lg:block lg:col-span-1 space-y-6">
+                <ProgressOverview 
+                  achievements={achievements}
+                  chronologicalAge={chronologicalAge}
+                  onDomainClick={handleDomainChange}
+                />
+                {timelineData.length === 0 && (
+                  <MilestoneSuggestions 
+                    chronologicalAge={chronologicalAge}
+                    achievements={achievements}
+                    onSuggestionClick={handleDomainChange}
+                  />
+                )}
+              </div>
+              
+              {/* Milestones Section */}
+              <div className="lg:col-span-1">
+                <h2 className="text-2xl md:text-3xl font-bold mb-4 text-aurora-text-primary">Log Milestones</h2>
+                <Questionnaire 
+                  chronologicalAge={chronologicalAge}
+                  achievements={achievements}
+                  onAchievementChange={handleAchievementChange}
+                  onPhotoChange={handlePhotoChange}
+                  dob={profile.dob}
+                  activeDomain={activeDomain || undefined}
+                  onDomainChange={handleDomainChange}
+                />
+              </div>
+              
+              {/* Timeline Section */}
+              <div className="lg:col-span-1">
                <div className="flex items-center justify-between mb-4">
-                 <h2 className="text-3xl font-bold text-aurora-text-primary">Baby's Timeline</h2>
+                 <h2 className="text-2xl md:text-3xl font-bold text-aurora-text-primary">Baby's Timeline</h2>
                  {isMobile && (
                    <button
                      onClick={() => setShowFullscreenTimeline(true)}
@@ -250,13 +317,31 @@ const App: React.FC = () => {
                     <Timeline timelineData={timelineData} />
                ) : (
                     <div className="text-center py-16 px-6 bg-aurora-card/70 backdrop-blur-lg border border-aurora-border rounded-2xl shadow-aurora-glow-blue h-full flex flex-col justify-center items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-aurora-accent-purple mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <h3 className="text-xl font-semibold text-aurora-text-primary">Your Timeline Awaits!</h3>
-                        <p className="text-aurora-text-secondary mt-2">Log your baby's "firsts" on the left to see their amazing journey unfold here.</p>
+                        <div className="relative mb-6">
+                            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-aurora-accent-purple/20 to-aurora-accent-green/20 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-aurora-accent-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-aurora-accent-green rounded-full flex items-center justify-center">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                            </div>
+                        </div>
+                        <h3 className="text-xl font-semibold text-aurora-text-primary mb-2">Ready to Capture Memories?</h3>
+                        <p className="text-aurora-text-secondary text-sm leading-relaxed mb-6 max-w-md">
+                            Start logging {profile.name}'s developmental milestones to create a beautiful timeline of their growth journey.
+                        </p>
+                        <div className="bg-aurora-accent-purple/10 border border-aurora-accent-purple/20 rounded-xl p-4 max-w-sm">
+                            <h4 className="font-semibold text-aurora-text-primary text-sm mb-2">💡 Getting Started</h4>
+                            <p className="text-xs text-aurora-text-secondary leading-relaxed">
+                                Choose a development area on the left and log your baby's first achievements. Each milestone will appear here with photos and dates!
+                            </p>
+                        </div>
                     </div>
                )}
+              </div>
             </div>
           </div>
         ) : (

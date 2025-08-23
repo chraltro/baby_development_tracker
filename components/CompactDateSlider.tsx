@@ -46,11 +46,23 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
   };
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedDays(parseInt(e.target.value));
+    const newValue = parseInt(e.target.value);
+    setSelectedDays(newValue);
+    
+    // Provide haptic feedback on mobile if available
+    if (navigator.vibrate) {
+      navigator.vibrate(10);
+    }
   };
 
   const handleDateConfirm = () => {
     const selectedDate = getSelectedDate(selectedDays);
+    
+    // Provide haptic feedback
+    if (navigator.vibrate) {
+      navigator.vibrate(20);
+    }
+    
     onDateSelect(selectedDate.toISOString().split('T')[0]);
   };
 
@@ -172,7 +184,7 @@ const CompactDateSlider: React.FC<CompactDateSliderProps> = ({ dob, onDateSelect
         <button
           onClick={handleDateConfirm}
           data-no-aurora
-          className="px-8 py-3 text-base bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green rounded-xl transition-colors touch-manipulation min-h-[48px] font-semibold shadow-aurora-glow-green"
+          className="px-8 py-3 text-base bg-aurora-accent-green/20 hover:bg-aurora-accent-green/30 text-aurora-accent-green rounded-xl transition-colors touch-manipulation touch-feedback min-h-[48px] font-semibold shadow-aurora-glow-green"
         >
           Confirm Date
         </button>

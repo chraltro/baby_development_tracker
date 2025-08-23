@@ -23,7 +23,8 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
   chronologicalAge
 }) => {
   const [showDateSlider, setShowDateSlider] = useState(true); // Start with date selection immediately
-  const isAchieved = achievements[milestone.id];
+  const milestoneId = milestone.canonicalId || milestone.id;
+  const isAchieved = achievements[milestoneId];
   
   const nextMilestone = useMemo(() => {
     const currentIndex = MILESTONES.findIndex(m => m.id === milestone.id);
@@ -36,7 +37,7 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
 
   const handleNoClick = () => {
     if (isAchieved) {
-      onAchievementChange(milestone.id, null);
+      onAchievementChange(milestoneId, null);
     }
     if (nextMilestone) {
       // Stay in fullscreen mode and show next milestone
@@ -47,7 +48,7 @@ const FullscreenQuestionnaire: React.FC<FullscreenQuestionnaireProps> = ({
   };
 
   const handleDateSelect = (selectedDate: string) => {
-    onAchievementChange(milestone.id, { date: selectedDate });
+    onAchievementChange(milestoneId, { date: selectedDate });
     
     if (nextMilestone) {
       // Stay in fullscreen mode and show next milestone

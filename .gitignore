@@ -13,7 +13,8 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.claude/*
+*claude*
+playwright*
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -23,3 +24,4 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+.tests

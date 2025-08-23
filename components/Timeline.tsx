@@ -56,7 +56,7 @@ const Timeline: React.FC<TimelineProps> = ({ timelineData }) => {
                        <div className="p-4">
                            <div className="flex items-start gap-4">
                                <div className="mt-1 flex-shrink-0" style={{ color: DOMAIN_COLORS[milestone.domain] }}>
-                                   <DomainIcon domain={milestone.domain} />
+                                   <DomainIcon domain={milestone.domain} size="md" />
                                </div>
                                <div>
                                    <p className="font-semibold text-aurora-text-primary">{milestone.description}</p>
